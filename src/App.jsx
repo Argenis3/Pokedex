@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchPokemons } from "./api/pokeApi";
+import { teamProvider } from "./components/Team";
 
 function App() {
   const [pokemons, setPokemons] = useState([]);
@@ -44,7 +45,7 @@ function App() {
           >
             <img src={p.image} alt={p.name} style={{ width: "100%" }} />
             <h3 style={{ textTransform: "capitalize" }}>{p.name}</h3>
-            <p>Tipo: {p.type}</p>
+            <p>Type: {p.type}</p>
           </div>
         ))}
       </div>
