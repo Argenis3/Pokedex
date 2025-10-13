@@ -1,35 +1,95 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { fetchPokemons } from "./api/pokeApi";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [pokemons, setPokemons] = useState([]);
+  const [page, setPage] = useState(0); // empieza en la página 0
+  const [loading, setLoading] = useState(false);
+  const limit = 12; // cuántos Pokémon por página
+
+  useEffect(() => {
+    const loadPokemons = async () => {
+      setLoading(true);
+      const data = await fetchPokemons(limit, page * limit);
+      setPokemons(data);
+      setLoading(false);
+    };
+    loadPokemons();
+  }, [page]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div style={{ background: "#1b1b1b", color: "#fff", minHeight: "100vh", padding: "20px" }}>
+      <h1 style={{ textAlign: "center" }}>Pokédex</h1>
+
+      {loading && <p style={{ textAlign: "center" }}>Cargando...</p>}
+
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "20px",
+        }}
+      >
+        {pokemons.map((p) => (
+          <div
+            key={p.id}
+            style={{
+              background: "#2c2c2c",
+              borderRadius: "10px",
+              padding: "10px",
+              textAlign: "center",
+              width: "180px",
+            }}
+          >
+            <img src={p.image} alt={p.name} style={{ width: "100%" }} />
+            <h3 style={{ textTransform: "capitalize" }}>{p.name}</h3>
+            <p>Tipo: {p.type}</p>
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+
+      {/* Controles de paginación */}
+      <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 0))}
+          disabled={page === 0}
+          style={{
+            marginRight: "10px",
+            background: "#ffcb05",
+            color: "#2a75bb",
+            border: "none",
+            padding: "10px 20px",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            opacity: page === 0 ? 0.5 : 1,
+          }}
+        >
+          ← Anterior
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          style={{
+            background: "#2a75bb",
+            color: "#fff",
+            border: "none",
+            padding: "10px 20px",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          Siguiente →
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+
+      <p style={{ textAlign: "center", marginTop: "10px" }}>
+        Página {page + 1}
       </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
