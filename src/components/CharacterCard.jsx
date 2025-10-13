@@ -1,13 +1,27 @@
-import React from "react";
+import { useTeam } from "./TeamProvider";
+import "./CharacterCard.css";
 
-export default function CharacterCard({ character }) {
+function CharacterCard({ pokemon }) {
+  const { team, addToTeam, removeFromTeam } = useTeam();
+  const isInTeam = team.some(p => p.id === pokemon.id);
+
   return (
-    <div className="character-card">
-      <h3>{character.name}</h3>
-      {character.image && <img src={character.image} alt={character.name} style={{ width: "150px" }} />}
-      <p>Especie: {character.species}</p>
-      <p>Planeta: {character.planet}</p>
-      {/* Puedes mostrar más campos si la API los incluye */}
+    <div className="pokemon-card">
+      <img src={pokemon.image} alt={pokemon.name} />
+      <h3 className="pokemon-name">{pokemon.name}</h3>
+      <p>Tipo: {pokemon.type}</p>
+
+      {isInTeam ? (
+        <button className="remove-btn" onClick={() => removeFromTeam(pokemon.id)}>
+          Quitar del equipo
+        </button>
+      ) : (
+        <button className="add-btn" onClick={() => addToTeam(pokemon)}>
+          Agregar al equipo
+        </button>
+      )}
     </div>
   );
 }
+
+export default CharacterCard;

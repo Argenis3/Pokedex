@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { fetchPokemons } from "./api/pokeApi";
+import "./App.css";
+import CharacterList from "./components/CharachterList";
 import { teamProvider } from "./components/Team";
 
 function App() {
   const [pokemons, setPokemons] = useState([]);
   const [page, setPage] = useState(0); // empieza en la página 0
   const [loading, setLoading] = useState(false);
-  const limit = 12; // cuántos Pokémon por página
+  const limit = 12; 
 
   useEffect(() => {
     const loadPokemons = async () => {

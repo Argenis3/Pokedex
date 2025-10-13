@@ -1,0 +1,46 @@
+.pokemon-card {
+  background: #2c2c2c;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  width: 180px;
+  transition: transform 0.2s ease;
+}
+
+.pokemon-card:hover {
+  transform: scale(1.05);
+}
+
+.pokemon-name {
+  text-transform: capitalize;
+  color: #ffcb05;
+}
+
+.add-btn,
+.remove-btn {
+  margin-top: 8px;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.add-btn {
+  background: #2a75bb;
+  color: white;
+}
+
+.add-btn:hover {
+  background: #3a85cc;
+}
+
+.remove-btn {
+  background: #d32f2f;
+  color: white;
+}
+
+.remove-btn:hover {
+  background: #f44336;
+}
