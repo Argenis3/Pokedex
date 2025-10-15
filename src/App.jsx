@@ -1,98 +1,94 @@
 import { useEffect, useState } from "react";
 import { fetchPokemons } from "./api/pokeApi";
-import "./App.css";
 import CharacterList from "./components/CharachterList";
-import { teamProvider } from "./components/Team";
+import TeamView from "./components/Team";
+import SearchBar from "./components/SearchBar";
+
 
 function App() {
   const [pokemons, setPokemons] = useState([]);
-  const [page, setPage] = useState(0); // empieza en la página 0
+  const [filtered, setFiltered] = useState([]);
+  const [page, setPage] = useState(0);
+  const [view, setView] = useState("pokedex");
   const [loading, setLoading] = useState(false);
-  const limit = 12; 
+  const limit = 20; // cantidad por página
 
   useEffect(() => {
-    const loadPokemons = async () => {
-      setLoading(true);
-      const data = await fetchPokemons(limit, page * limit);
-      setPokemons(data);
-      setLoading(false);
-    };
-    loadPokemons();
-  }, [page]);
+    loadMorePokemons();
+  }, []);
+
+  const loadMorePokemons = async () => {
+    setLoading(true);
+    const offset = page * limit;
+    const newPokemons = await fetchPokemons(limit, offset);
+    const allPokemons = [...pokemons, ...newPokemons];
+    setPokemons(allPokemons);
+    setFiltered(allPokemons);
+    setPage((prev) => prev + 1);
+    setLoading(false);
+  };
+
+  // 🔍 Búsqueda
+  const handleSearch = (query) => {
+    if (!query) setFiltered(pokemons);
+    else
+      setFiltered(
+        pokemons.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
+      );
+  };
 
   return (
-    <div style={{ background: "#1b1b1b", color: "#fff", minHeight: "100vh", padding: "20px" }}>
+    <div
+      style={{
+        background: "#1b1b1b",
+        color: "#fff",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
       <h1 style={{ textAlign: "center" }}>Pokédex</h1>
 
-      {loading && <p style={{ textAlign: "center" }}>Cargando...</p>}
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "20px",
-        }}
-      >
-        {pokemons.map((p) => (
-          <div
-            key={p.id}
-            style={{
-              background: "#2c2c2c",
-              borderRadius: "10px",
-              padding: "10px",
-              textAlign: "center",
-              width: "180px",
-            }}
-          >
-            <img src={p.image} alt={p.name} style={{ width: "100%" }} />
-            <h3 style={{ textTransform: "capitalize" }}>{p.name}</h3>
-            <p>Type: {p.type}</p>
-          </div>
-        ))}
+      {/* 🔘 Cambiar vista */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <button onClick={() => setView("pokedex")}>Pokédex</button>
+        <button onClick={() => setView("team")}>Mi Equipo</button>
       </div>
 
-      {/* Controles de paginación */}
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <button
-          onClick={() => setPage((p) => Math.max(p - 1, 0))}
-          disabled={page === 0}
-          style={{
-            marginRight: "10px",
-            background: "#ffcb05",
-            color: "#2a75bb",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            opacity: page === 0 ? 0.5 : 1,
-          }}
-        >
-          ← Anterior
-        </button>
+      {/* 📘 Pokédex */}
+      {view === "pokedex" && (
+        <>
+          <SearchBar onSearch={handleSearch} />
 
-        <button
-          onClick={() => setPage((p) => p + 1)}
-          style={{
-            background: "#2a75bb",
-            color: "#fff",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          Siguiente →
-        </button>
-      </div>
+          <CharacterList pokemons={filtered} />
 
-      <p style={{ textAlign: "center", marginTop: "10px" }}>
-        Página {page + 1}
-      </p>
+          {/*  Botón “Cargar más Pokémon” */}
+          {!loading && (
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <button
+                onClick={loadMorePokemons}
+                style={{
+                  background: "#3b4cca",
+                  color: "white",
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Cargar más Pokémon
+              </button>
+            </div>
+          )}
+
+          {loading && <p style={{ textAlign: "center" }}>Cargando Pokémon...</p>}
+        </>
+      )}
+
+      {/* 👥 Vista Equipo */}
+      {view === "team" && <TeamView />}
     </div>
   );
 }
 
 export default App;
+

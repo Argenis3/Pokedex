@@ -1,20 +1,29 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const TeamContext = createContext();
 
-export const useTeam = () => useContext(TeamContext);
+export function TeamProvider({ children }) {
+  const [team, setTeam] = useState(() => {
+    const saved = localStorage.getItem("team");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-export const TeamProvider = ({ children }) => {
-  const [team, setTeam] = useState([]);
+  useEffect(() => {
+    localStorage.setItem("team", JSON.stringify(team));
+  }, [team]);
 
   const addToTeam = (pokemon) => {
-    if (team.length < 6 && !team.find(p => p.id === pokemon.id)) {
+    if (team.length >= 6) {
+      alert("Tu equipo está lleno (máximo 6 Pokémon).");
+      return;
+    }
+    if (!team.some((p) => p.id === pokemon.id)) {
       setTeam([...team, pokemon]);
     }
   };
 
   const removeFromTeam = (id) => {
-    setTeam(team.filter(p => p.id !== id));
+    setTeam(team.filter((p) => p.id !== id));
   };
 
   return (
@@ -22,4 +31,6 @@ export const TeamProvider = ({ children }) => {
       {children}
     </TeamContext.Provider>
   );
-};
+}
+
+export const useTeam = () => useContext(TeamContext);

@@ -1,46 +1,45 @@
+/* src/components/CharacterCard.css */
 .pokemon-card {
-  background: #2c2c2c;
-  border-radius: 10px;
-  padding: 10px;
+  background-color: #292929;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   text-align: center;
-  width: 180px;
-  transition: transform 0.2s ease;
+  padding: 10px;
+  margin: 10px;
+  width: 150px; /* 🔹 reduce el ancho */
+  transition: transform 0.2s;
 }
 
 .pokemon-card:hover {
   transform: scale(1.05);
 }
 
-.pokemon-name {
-  text-transform: capitalize;
-  color: #ffcb05;
+.pokemon-card img {
+  width: 100px;  /* 🔹 más pequeño */
+  height: 100px;
 }
 
-.add-btn,
-.remove-btn {
-  margin-top: 8px;
+.pokemon-name {
+  color: #fdd835;
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+.add-btn, .remove-btn {
+  padding: 5px 10px;
+  font-size: 0.8rem;
   border: none;
-  padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
+  margin-top: 5px;
 }
 
 .add-btn {
-  background: #2a75bb;
+  background-color: #4caf50;
   color: white;
-}
-
-.add-btn:hover {
-  background: #3a85cc;
 }
 
 .remove-btn {
-  background: #d32f2f;
+  background-color: #f44336;
   color: white;
-}
-
-.remove-btn:hover {
-  background: #f44336;
 }

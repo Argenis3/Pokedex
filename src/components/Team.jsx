@@ -1,29 +1,30 @@
-import React, { createContext, useContext, useState } from "react";
+import { useTeam } from "./TeamProvider";
+import CharacterCard from "./CharacterCard";
 
-const TeamContext = createContext();
+function TeamView() {
+  const { team } = useTeam();
 
-export function teamProvider({ children }) {
-    const [team, setTeam] = useState([]);  //aquí se guradarán los personajes del equipo
-
-    const addPokemon = (pokemon) => {
-    // evitar duplicados (por ejemplo por nombre o id)
-    setTeam((prev) => {
-      if (prev.find((p) => p.id === pokemon.id)) {
-        return prev;
-      }
-      return [...prev, pokemon];
-    });
-  };
-   const removePokemon = (pkemonid) => {
-    setTeam((prev) => prev.filter((p) => p.id !== pkemonid)); //filtra el equipo y elimina el personaje con el id dado
-    };
-    return (
-        <TeamContext.Provider value={{ team, addPokemon, removePokemon }}>
-            {children}
-        </TeamContext.Provider>
-    );
+  return (
+    <div style={{ padding: "20px", color: "#fff" }}>
+      <h2>Mi equipo ({team.length}/6)</h2>
+      {team.length === 0 ? (
+        <p>No tienes ningún Pokémon en tu equipo aún.</p>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "20px",
+            justifyContent: "center",
+          }}
+        >
+          {team.map((pokemon) => (
+            <CharacterCard key={pokemon.id} pokemon={pokemon} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
-export function useTeam() {
-    return useContext(TeamContext);
-}
+export default TeamView;
